@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Adventure Digital Library Pro</title>
   
-  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri&family=Scheherazade+New:wght@400;700&family=Lateef&display=swap" rel="stylesheet">
   
   <style>
@@ -390,7 +387,6 @@
 </head>
 <body>
 
-  <!-- ===== LOADER ===== -->
   <div id="loader">
     <div class="spinner"></div>
     <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
@@ -404,13 +400,11 @@
     </div>
   </div>
 
-  <!-- ===== AUDIO ELEMENTS ===== -->
   <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
   <audio id="bgMusic" loop playsinline src="/Audio/nasheed_1.mp3"></audio>
   <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
   <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
 
-  <!-- ===== HOME VIEW ===== -->
   <div id="homeView">
     <header class="home-header">
       <div class="top-bar">
@@ -447,13 +441,11 @@
     </nav>
   </div>
 
-  <!-- ===== LOADING OVERLAY ===== -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loader-spinner"></div>
     <div class="loader-text" id="loadingText">📖 പുസ്തകം ലോഡ് ചെയ്യുന്നു...</div>
   </div>
 
-  <!-- ===== READER VIEW ===== -->
   <div id="readerView">
     <header class="reader-header">
       <button class="back-btn" onclick="closeReader()"><i class="fas fa-arrow-left"></i></button>
@@ -507,7 +499,6 @@
     </nav>
   </div>
 
-  <!-- ===== MINI PLAYER ===== -->
   <div class="mini-player" id="miniPlayer">
     <div class="mini-details" onclick="restorePlayingBook()">
       <div class="mini-title" id="miniTitle">Ready Track</div>
@@ -520,7 +511,6 @@
     </div>
   </div>
 
-  <!-- ===== VISUAL MODE ===== -->
   <div class="visual-mode" id="visualMode">
     <div class="visual-video-wrapper" id="visualVideoWrapper">
       <video id="visualVideo" muted loop playsinline></video>
@@ -545,13 +535,11 @@
     <div class="visual-progress"><div class="vis-progress-bar" id="visProgressBar"></div></div>
   </div>
 
-  <!-- ===== MODALS ===== -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
   <div class="modal-box" id="settingsModal">
     <div class="modal-header"><span>⚙️ ക്രമീകരണങ്ങൾ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
-      <!-- Fonts -->
       <div class="setting-group">
         <label class="setting-label">🔤 Fonts</label>
         <div class="setting-row"><span>മലയാളം</span><select id="optFontMl" onchange="applyFonts()"><option value="'Manjari', sans-serif">Manjari</option><option value="'Chilanka', cursive">Chilanka</option><option value="'Gayathri', sans-serif">Gayathri</option></select></div>
@@ -559,13 +547,11 @@
         <div class="setting-row"><span>English</span><select id="optFontEn" onchange="applyFonts()"><option value="sans-serif">Sans</option><option value="serif">Serif</option></select></div>
       </div>
 
-      <!-- Reading Mode -->
       <div class="setting-group">
         <label class="setting-label">📖 Reading Mode</label>
         <div class="setting-row"><span>Vertical Smooth Scroll</span><input type="checkbox" id="optVerticalScroll" onchange="toggleReadingStyle()"></div>
       </div>
 
-      <!-- TTS Voice -->
       <div class="setting-group">
         <label class="setting-label">🎙️ TTS Voice Control</label>
         <select id="optAudioLang" onchange="updateVoiceList(); applyAudioSettings(true);" style="margin-bottom:10px;">
@@ -574,7 +560,6 @@
           <option value="en-US">English</option>
         </select>
         
-        <!-- Gender Filter -->
         <div style="display:flex; gap:10px; margin:10px 0;">
           <button id="voiceGenderAll" class="gender-btn active" onclick="filterVoices('all')">🎙️ All</button>
           <button id="voiceGenderMale" class="gender-btn" onclick="filterVoices('male')">👨 Male</button>
@@ -585,13 +570,11 @@
         <select id="optVoice" onchange="applyAudioSettings(true)"></select>
       </div>
 
-      <!-- Speed -->
       <div class="setting-group">
         <label class="setting-label">📏 Speed</label>
         <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
       </div>
 
-      <!-- Display Layers -->
       <div class="setting-group">
         <label class="setting-label">📖 Display Layers</label>
         <div class="setting-row"><span>Arabic</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
@@ -599,31 +582,26 @@
         <div class="setting-row"><span>English</span><input type="checkbox" id="optShowEn" checked onchange="renderAllViews()"></div>
       </div>
 
-      <!-- Font Size -->
       <div class="setting-group">
         <label class="setting-label">📏 Font Size</label>
         <input type="range" id="optFontSize" min="14" max="30" value="18" onchange="applyFontSize()">
       </div>
 
-      <!-- Theme -->
       <div class="setting-group">
         <label class="setting-label">🎨 Theme</label>
         <div class="theme-grid"><div class="theme-btn active" id="th-light" onclick="setTheme('light')">☀️ Light</div><div class="theme-btn" id="th-dark" onclick="setTheme('dark')">🌙 Dark</div><div class="theme-btn" id="th-sepia" onclick="setTheme('sepia')">📜 Sepia</div></div>
       </div>
 
-      <!-- Background Music -->
       <div class="setting-group">
         <label class="setting-label">🎵 Background Ambient</label>
         <select id="optBgMusic" onchange="handleBgMusic()"><option value="none">🔇 Off</option><option value="nasheed">🎵 Nasheed</option><option value="rain">🌧️ Rain</option><option value="wind">🍃 Wind</option></select>
       </div>
 
-      <!-- Auto Next & Click to Speak -->
       <div class="setting-group">
         <div class="setting-row"><span><b>🔄 Auto Next Page</b></span><input type="checkbox" id="optAutoNext" checked></div>
         <div class="setting-row"><span><b>🔊 Click to Speak</b></span><input type="checkbox" id="optTouchSpeak" checked></div>
       </div>
 
-      <!-- YouTube BG -->
       <div class="setting-group">
         <label class="setting-label">🎬 YouTube Video BG ID</label>
         <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
@@ -640,26 +618,36 @@
 
   <script>
     // ================================================================
-    // SUPABASE INTEGRATION
+    // SUPABASE INTEGRATION WITH INLINE/LOCAL STORAGE DUAL LATCH
     // ================================================================
     let supabase = null;
     let SUPABASE_URL = '';
     let SUPABASE_KEY = '';
 
-    // Auto-detect Config from localStorage
-    (function loadSupabaseConfig() {
-      const savedUrl = localStorage.getItem('supabase_url');
-      const savedKey = localStorage.getItem('supabase_key');
-      if (savedUrl && savedKey) {
-        SUPABASE_URL = savedUrl;
-        SUPABASE_KEY = savedKey;
+    // Auto-detect Config from window context (Vercel injection emulation) or localStorage
+    async function loadSupabaseConfig() {
+      // 1. ഫ്രണ്ട്-എൻഡ് ഗ്ലോബൽ വിൻഡോ വേരിയബിളുകളിൽ ഉണ്ടോ എന്ന് പരിശോധിക്കുന്നു
+      if (window.ENV_SUPABASE_URL && window.ENV_SUPABASE_KEY) {
+        SUPABASE_URL = window.ENV_SUPABASE_URL;
+        SUPABASE_KEY = window.ENV_SUPABASE_KEY;
+      }
+      
+      // 2. ഇല്ലെങ്കിൽ ലോക്കൽ സ്റ്റോറേജിൽ ഉണ്ടോ എന്ന് നോക്കുന്നു
+      if (!SUPABASE_URL || !SUPABASE_KEY) {
+        SUPABASE_URL = localStorage.getItem('supabase_url') || '';
+        SUPABASE_KEY = localStorage.getItem('supabase_key') || '';
+      }
+
+      // 3. കീകൾ ലഭ്യമാണെങ്കിൽ ഡാറ്റാബേസ് കണക്ട് ചെയ്യുന്നു
+      if (SUPABASE_URL && SUPABASE_KEY) {
         initSupabaseInstance();
       } else {
+        // ഒന്നുമ്മില്ലെങ്കിൽ ലോഗിൻ ബോക്സ് കാണിക്കുന്നു
         document.getElementById('connectionSetup').classList.add('show');
         document.getElementById('loadStatus').textContent = '🔌 Supabase-ലേക്ക് കണക്റ്റ് ചെയ്യുക';
         document.getElementById('loadSubStatus').textContent = 'URL & Key നൽകി Connect ചെയ്യുക';
       }
-    })();
+    }
 
     function initSupabase() {
       const url = document.getElementById('supabaseUrl').value.trim();
@@ -726,7 +714,6 @@
 
     function getFilteredVoices(voices, gender = 'all') {
       const naturalPatterns = ['Natural', 'Neural', 'Online'];
-      
       const maleNames = ['Midhun', 'Hamed', 'Shakir', 'Guy', 'Davis', 'Christopher', 'Ravi', 'Arun'];
       const femaleNames = ['Sobhana', 'Salma', 'Fatima', 'Aria', 'Jenny', 'Sonia', 'Ananya', 'Meera'];
       
@@ -741,7 +728,6 @@
       }
       
       if (filtered.length === 0) filtered = voices;
-      
       filtered.sort((a, b) => a.lang.localeCompare(b.lang));
       return filtered;
     }
@@ -767,7 +753,6 @@
       allSystemVoices = synth.getVoices();
       updateVoiceList();
       
-      // Edge natural voices load with delay
       if (allSystemVoices.length === 0) {
         setTimeout(() => {
           allSystemVoices = synth.getVoices();
@@ -902,9 +887,6 @@
       if (bookId) openBook(bookId);
     }
 
-    // ================================================================
-    // LOAD & SYNC
-    // ================================================================
     function showLoading(text) {
       document.getElementById('loadingText').textContent = text || '📖 Loading...';
       document.getElementById('loadingOverlay').classList.add('show');
@@ -912,39 +894,7 @@
     function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 
     // ================================================================
-    // RPC: GET PART PAGES (Keyset Pagination)
-    // ================================================================
-    async function loadPartPages(bookId, partNum, pageStart = 1, limit = 20) {
-      const cacheKey = `${bookId}_part_${partNum}_page_${pageStart}`;
-      
-      if (partCache.has(cacheKey)) {
-        return partCache.get(cacheKey);
-      }
-
-      try {
-        const { data, error } = await supabase.rpc('get_book_pages', {
-          p_book_id: bookId,
-          p_part_num: partNum,
-          p_page_start: pageStart,
-          p_limit: limit
-        });
-
-        if (error) throw error;
-
-        partCache.set(cacheKey, data);
-        data.forEach(page => {
-          pageCache.set(`${bookId}_${partNum}_${page.page_number}`, page);
-        });
-
-        return data;
-      } catch (error) {
-        console.error('Error loading pages:', error);
-        throw error;
-      }
-    }
-
-    // ================================================================
-    // OPEN BOOK
+    // OPEN BOOK WITH ORIGINAL STRUCTURE PARSING
     // ================================================================
     async function openBook(bookId) {
       const book = STATE.books.find(b => b.id === bookId);
@@ -955,25 +905,50 @@
       showLoading(`📖 ${book.titleMl || book.title} ലോഡ് ചെയ്യുന്നു...`);
       
       try {
-        // Load Part 1
-        const pages = await loadPartPages(bookId, 1, 1, 20);
-        
-        if (pages && pages.length > 0) {
-          STATE.data = pages;
-          STATE.totalPages = pages.length;
+        const tableName = `${bookId}_contents`;
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .order('ID', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // ഒറിജിനൽ ഗൂഗിൾ ഷീറ്റ് കോളങ്ങളുടെ പേരുകൾ കൃത്യമായി മാപ്പ് ചെയ്യുന്നു
+          let list = data.map(row => {
+            let ar = (row['Arabic Text'] || "").toString().trim();
+            let ml = (row['Malayalam Text'] || "").toString().trim();
+            let en = (row['English Text'] || "").toString().trim();
+            let plainAr = ar.replace(/<\/?[^>]+(>|$)/g, "").trim();
+            let plainMl = ml.replace(/<\/?[^>]+(>|$)/g, "").trim();
+            let plainEn = en.replace(/<\/?[^>]+(>|$)/g, "").trim();
+            
+            let hMatch = ar.match(/<(h[1-6])[^>]*>(.*?)<\/\1>/i);
+            let isHead = !!hMatch;
+            let headingAr = hMatch ? hMatch[2].replace(/<[^>]+>/g, "").trim() : "";
+            let hTagLevel = hMatch ? hMatch[1].toLowerCase() : "";
+
+            return {
+              id: row['ID'] || row.id, 
+              part: row['Part Number'] || '1', 
+              page: row['Page Number'] || '1',
+              arStr: ar, mlStr: ml, enStr: en, 
+              isHead: isHead, headingAr: headingAr,
+              hTagLevel: hTagLevel, arPure: plainAr, mlPure: plainMl, enPure: plainEn
+            };
+          });
+
+          STATE.data = list;
+          STATE.totalPages = list.length;
           STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
           STATE.charOffset = parseInt(localStorage.getItem(bookId + '_offset')) || 0;
+          if (STATE.currentPage >= STATE.totalPages) STATE.currentPage = 0;
           
           hideLoading();
           openReader();
-          
-          // Prefetch Part 2
-          setTimeout(() => {
-            loadPartPages(bookId, 2, 1, 20).catch(() => {});
-          }, 1000);
         } else {
           hideLoading();
-          alert("ഡാറ്റ ലഭ്യമല്ല! Part 1 ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക.");
+          alert("ഡാറ്റ ലഭ്യമല്ല! ടേബിളിൽ കൃത്യമായി ഡാറ്റ ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക.");
         }
       } catch (err) {
         hideLoading();
@@ -1093,7 +1068,7 @@
     }
 
     // ================================================================
-    // RENDER ALL PAGES
+    // RENDER ALL PAGES WITH VIEWPORT DISPATCH
     // ================================================================
     function renderAllPages() {
       if (!STATE.data || STATE.data.length === 0) return;
@@ -1202,7 +1177,7 @@
     }
 
     // ================================================================
-    // TTS ENGINE
+    // TTS SPEECH GENERATOR ENGINE
     // ================================================================
     function togglePlay() {
       resumeAudioContext();
@@ -1255,7 +1230,6 @@
 
       synth.cancel();
       
-      // Get selected voice
       const voiceSelect = document.getElementById('optVoice');
       const selectedVoiceName = voiceSelect ? voiceSelect.value : '';
       let selectedVoice = null;
@@ -1351,6 +1325,9 @@
       }
     }
 
+    // ================================================================
+    // INTERFACE DYNAMICS
+    // ================================================================
     function updatePlayIcon() {
       const icon = STATE.playing ? 'fa-pause' : 'fa-play';
       document.getElementById('miniPlayIcon').className = `fas ${icon}`;
@@ -1382,7 +1359,7 @@
     }
 
     // ================================================================
-    // VISUAL MODE
+    // VISUAL REELS LAYER
     // ================================================================
     function openVisualMode() {
       document.getElementById('visualMode').classList.add('show');
@@ -1479,7 +1456,7 @@
     }
 
     // ================================================================
-    // TOC
+    // STRUCTURE COMPONENT: TOC
     // ================================================================
     function openTOC() {
       openModal('tocModal');
@@ -1568,7 +1545,7 @@
     }
 
     // ================================================================
-    // MEDIA SESSION
+    // MEDIA COMPONENT
     // ================================================================
     function setupMediaSession() {
       if('mediaSession' in navigator) {
@@ -1592,9 +1569,6 @@
       }
     }
 
-    // ================================================================
-    // BOOKMARKS
-    // ================================================================
     function toggleBookmark() {
       const key = STATE.currentBookId + '_bookmarks';
       let bookmarks = JSON.parse(localStorage.getItem(key) || '[]');
@@ -1613,7 +1587,7 @@
     }
 
     // ================================================================
-    // SYNC FUNCTIONS
+    // SYSTEM SUBSYSTEM CONTROLS
     // ================================================================
     async function syncAllBooks() {
       showLoading("🔄 എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്യുന്നു...");
@@ -1628,9 +1602,6 @@
       hideLoading();
     }
 
-    // ================================================================
-    // MODALS & SETTINGS
-    // ================================================================
     function openSettings() { openModal('settingsModal'); }
     function openModal(id) { document.getElementById('modalOverlay').classList.add('show'); document.getElementById(id).classList.add('show'); }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); document.querySelectorAll('.modal-box').forEach(el => el.classList.remove('show')); }
@@ -1679,7 +1650,6 @@
       
       applyFonts();
       applyFontSize();
-      STATE.showAr = true; STATE.showMl = true; STATE.showEn = true;
     }
 
     function renderAllViews() {
@@ -1696,33 +1666,8 @@
       renderBooks(filtered);
     }
 
-    function toggleReadingStyle() {
-      const isVertical = document.getElementById('optVerticalScroll').checked;
-      STATE.scrollStyle = isVertical ? 'vertical' : 'page';
-      renderAllPages();
-    }
-
-    function switchViewportTab(mode) {
-      STATE.mode = mode;
-      document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
-      document.getElementById('audioView').style.display = mode === 'audio' ? 'block' : 'none';
-      document.getElementById('visualView').style.display = mode === 'visual' ? 'block' : 'none';
-      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-      let activeTab = document.getElementById('nav-' + mode); if(activeTab) activeTab.classList.add('active');
-      
-      if (mode === 'visual') {
-        document.getElementById('visualMode').classList.add('show');
-        updateVisualChunk(); applyVisualBg();
-      } else {
-        document.getElementById('visualMode').classList.remove('show');
-        document.getElementById('visualVideo').pause();
-        renderAllPages();
-      }
-      resumeAudioContext();
-    }
-
     // ================================================================
-    // DOM READY
+    // INITIALIZATION RUNTIME
     // ================================================================
     document.addEventListener('DOMContentLoaded', () => {
       loadPreferences();
@@ -1736,7 +1681,9 @@
       window.addEventListener("resize", adjustVideoScale);
       setupMediaSession();
       
-      // Edge browser detection
+      // Vercel deployment എൺവയോൺമെന്റ് അലൈൻമെന്റ് ഉൾപ്പെടുത്തി കോൺഫിഗറേഷൻ റൺ ചെയ്യുന്നു
+      loadSupabaseConfig();
+      
       if (navigator.userAgent.indexOf('Edg') !== -1) {
         console.log('🟦 Microsoft Edge detected - Natural voices available');
       }
