@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Adventure Digital Library Pro</title>
   
+  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri&family=Scheherazade+New:wght@400;700&family=Lateef&display=swap" rel="stylesheet">
   
   <style>
@@ -387,6 +390,7 @@
 </head>
 <body>
 
+  <!-- ===== LOADER ===== -->
   <div id="loader">
     <div class="spinner"></div>
     <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
@@ -400,11 +404,13 @@
     </div>
   </div>
 
+  <!-- ===== AUDIO ELEMENTS ===== -->
   <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
   <audio id="bgMusic" loop playsinline src="/Audio/nasheed_1.mp3"></audio>
   <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
   <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
 
+  <!-- ===== HOME VIEW ===== -->
   <div id="homeView">
     <header class="home-header">
       <div class="top-bar">
@@ -441,11 +447,13 @@
     </nav>
   </div>
 
+  <!-- ===== LOADING OVERLAY ===== -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loader-spinner"></div>
     <div class="loader-text" id="loadingText">📖 പുസ്തകം ലോഡ് ചെയ്യുന്നു...</div>
   </div>
 
+  <!-- ===== READER VIEW ===== -->
   <div id="readerView">
     <header class="reader-header">
       <button class="back-btn" onclick="closeReader()"><i class="fas fa-arrow-left"></i></button>
@@ -499,6 +507,7 @@
     </nav>
   </div>
 
+  <!-- ===== MINI PLAYER ===== -->
   <div class="mini-player" id="miniPlayer">
     <div class="mini-details" onclick="restorePlayingBook()">
       <div class="mini-title" id="miniTitle">Ready Track</div>
@@ -511,6 +520,7 @@
     </div>
   </div>
 
+  <!-- ===== VISUAL MODE ===== -->
   <div class="visual-mode" id="visualMode">
     <div class="visual-video-wrapper" id="visualVideoWrapper">
       <video id="visualVideo" muted loop playsinline></video>
@@ -535,11 +545,13 @@
     <div class="visual-progress"><div class="vis-progress-bar" id="visProgressBar"></div></div>
   </div>
 
+  <!-- ===== MODALS ===== -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
   <div class="modal-box" id="settingsModal">
     <div class="modal-header"><span>⚙️ ക്രമീകരണങ്ങൾ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
+      <!-- Fonts -->
       <div class="setting-group">
         <label class="setting-label">🔤 Fonts</label>
         <div class="setting-row"><span>മലയാളം</span><select id="optFontMl" onchange="applyFonts()"><option value="'Manjari', sans-serif">Manjari</option><option value="'Chilanka', cursive">Chilanka</option><option value="'Gayathri', sans-serif">Gayathri</option></select></div>
@@ -547,11 +559,13 @@
         <div class="setting-row"><span>English</span><select id="optFontEn" onchange="applyFonts()"><option value="sans-serif">Sans</option><option value="serif">Serif</option></select></div>
       </div>
 
+      <!-- Reading Mode -->
       <div class="setting-group">
         <label class="setting-label">📖 Reading Mode</label>
         <div class="setting-row"><span>Vertical Smooth Scroll</span><input type="checkbox" id="optVerticalScroll" onchange="toggleReadingStyle()"></div>
       </div>
 
+      <!-- TTS Voice -->
       <div class="setting-group">
         <label class="setting-label">🎙️ TTS Voice Control</label>
         <select id="optAudioLang" onchange="updateVoiceList(); applyAudioSettings(true);" style="margin-bottom:10px;">
@@ -560,6 +574,7 @@
           <option value="en-US">English</option>
         </select>
         
+        <!-- Gender Filter -->
         <div style="display:flex; gap:10px; margin:10px 0;">
           <button id="voiceGenderAll" class="gender-btn active" onclick="filterVoices('all')">🎙️ All</button>
           <button id="voiceGenderMale" class="gender-btn" onclick="filterVoices('male')">👨 Male</button>
@@ -570,11 +585,13 @@
         <select id="optVoice" onchange="applyAudioSettings(true)"></select>
       </div>
 
+      <!-- Speed -->
       <div class="setting-group">
         <label class="setting-label">📏 Speed</label>
         <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
       </div>
 
+      <!-- Display Layers -->
       <div class="setting-group">
         <label class="setting-label">📖 Display Layers</label>
         <div class="setting-row"><span>Arabic</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
@@ -582,26 +599,31 @@
         <div class="setting-row"><span>English</span><input type="checkbox" id="optShowEn" checked onchange="renderAllViews()"></div>
       </div>
 
+      <!-- Font Size -->
       <div class="setting-group">
         <label class="setting-label">📏 Font Size</label>
         <input type="range" id="optFontSize" min="14" max="30" value="18" onchange="applyFontSize()">
       </div>
 
+      <!-- Theme -->
       <div class="setting-group">
         <label class="setting-label">🎨 Theme</label>
         <div class="theme-grid"><div class="theme-btn active" id="th-light" onclick="setTheme('light')">☀️ Light</div><div class="theme-btn" id="th-dark" onclick="setTheme('dark')">🌙 Dark</div><div class="theme-btn" id="th-sepia" onclick="setTheme('sepia')">📜 Sepia</div></div>
       </div>
 
+      <!-- Background Music -->
       <div class="setting-group">
         <label class="setting-label">🎵 Background Ambient</label>
         <select id="optBgMusic" onchange="handleBgMusic()"><option value="none">🔇 Off</option><option value="nasheed">🎵 Nasheed</option><option value="rain">🌧️ Rain</option><option value="wind">🍃 Wind</option></select>
       </div>
 
+      <!-- Auto Next & Click to Speak -->
       <div class="setting-group">
         <div class="setting-row"><span><b>🔄 Auto Next Page</b></span><input type="checkbox" id="optAutoNext" checked></div>
         <div class="setting-row"><span><b>🔊 Click to Speak</b></span><input type="checkbox" id="optTouchSpeak" checked></div>
       </div>
 
+      <!-- YouTube BG -->
       <div class="setting-group">
         <label class="setting-label">🎬 YouTube Video BG ID</label>
         <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
@@ -618,31 +640,24 @@
 
   <script>
     // ================================================================
-    // SUPABASE INTEGRATION WITH INLINE/LOCAL STORAGE DUAL LATCH
+    // SUPABASE INTEGRATION
     // ================================================================
     let supabase = null;
-    let SUPABASE_URL = 'https://axjeqkeocbfemojomfjm.supabase.co';
-    let SUPABASE_KEY = 'sb_publishable_JgdXpn2s46NfLu0wNHU_9w_Cj9ewUKE';
+    
+    // 📢 ഇവിടെ നിങ്ങളുടെ ഒറിജിനൽ സുപബേസ് കീകൾ താഴെ നൽകുക:
+    let SUPABASE_URL = 'https://axjeqkeocbfemojomfjm.supabase.co'; 
+    let SUPABASE_KEY = 'sb_publishable_JgdXpn2s46NfLu0wNHU_9w_Cj9ewUKE'; 
 
-    // Auto-detect Config from window context (Vercel injection emulation) or localStorage
+    // Auto-detect Config from Script or localStorage fallback
     async function loadSupabaseConfig() {
-      // 1. ഫ്രണ്ട്-എൻഡ് ഗ്ലോബൽ വിൻഡോ വേരിയബിളുകളിൽ ഉണ്ടോ എന്ന് പരിശോധിക്കുന്നു
-      if (window.ENV_SUPABASE_URL && window.ENV_SUPABASE_KEY) {
-        SUPABASE_URL = window.ENV_SUPABASE_URL;
-        SUPABASE_KEY = window.ENV_SUPABASE_KEY;
-      }
-      
-      // 2. ഇല്ലെങ്കിൽ ലോക്കൽ സ്റ്റോറേജിൽ ഉണ്ടോ എന്ന് നോക്കുന്നു
-      if (!SUPABASE_URL || !SUPABASE_KEY) {
+      if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_SUPABASE_URL')) {
         SUPABASE_URL = localStorage.getItem('supabase_url') || '';
         SUPABASE_KEY = localStorage.getItem('supabase_key') || '';
       }
 
-      // 3. കീകൾ ലഭ്യമാണെങ്കിൽ ഡാറ്റാബേസ് കണക്ട് ചെയ്യുന്നു
-      if (SUPABASE_URL && SUPABASE_KEY) {
+      if (SUPABASE_URL && SUPABASE_KEY && !SUPABASE_URL.includes('YOUR_SUPABASE_URL')) {
         initSupabaseInstance();
       } else {
-        // ഒന്നുമ്മില്ലെങ്കിൽ ലോഗിൻ ബോക്സ് കാണിക്കുന്നു
         document.getElementById('connectionSetup').classList.add('show');
         document.getElementById('loadStatus').textContent = '🔌 Supabase-ലേക്ക് കണക്റ്റ് ചെയ്യുക';
         document.getElementById('loadSubStatus').textContent = 'URL & Key നൽകി Connect ചെയ്യുക';
@@ -818,9 +833,7 @@
     let audioProgressInterval = null;
     let tocTree = [], tocPath = [];
 
-    // ================================================================
-    // CACHE (In-Memory)
-    // ================================================================
+    // Cache Control Subsystem
     const pageCache = new Map();
     const partCache = new Map();
 
@@ -914,7 +927,6 @@
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // ഒറിജിനൽ ഗൂഗിൾ ഷീറ്റ് കോളങ്ങളുടെ പേരുകൾ കൃത്യമായി മാപ്പ് ചെയ്യുന്നു
           let list = data.map(row => {
             let ar = (row['Arabic Text'] || "").toString().trim();
             let ml = (row['Malayalam Text'] || "").toString().trim();
@@ -999,9 +1011,6 @@
       updateContinueReading();
     }
 
-    // ================================================================
-    // RENDER BOOKS
-    // ================================================================
     function renderBooks(books) {
       const grid = document.getElementById('bookGrid');
       if (!books || books.length === 0) { grid.innerHTML = `<div class="empty-state"><h3>ഗ്രന്ഥങ്ങൾ ലഭ്യമല്ല</h3></div>`; return; }
@@ -1067,9 +1076,6 @@
       grid.innerHTML = html;
     }
 
-    // ================================================================
-    // RENDER ALL PAGES WITH VIEWPORT DISPATCH
-    // ================================================================
     function renderAllPages() {
       if (!STATE.data || STATE.data.length === 0) return;
       
@@ -1177,7 +1183,7 @@
     }
 
     // ================================================================
-    // TTS SPEECH GENERATOR ENGINE
+    // ENGINE PLAY DISPATCH
     // ================================================================
     function togglePlay() {
       resumeAudioContext();
@@ -1325,9 +1331,6 @@
       }
     }
 
-    // ================================================================
-    // INTERFACE DYNAMICS
-    // ================================================================
     function updatePlayIcon() {
       const icon = STATE.playing ? 'fa-pause' : 'fa-play';
       document.getElementById('miniPlayIcon').className = `fas ${icon}`;
@@ -1456,7 +1459,7 @@
     }
 
     // ================================================================
-    // STRUCTURE COMPONENT: TOC
+    // TOC SUBSYSTEM
     // ================================================================
     function openTOC() {
       openModal('tocModal');
@@ -1545,7 +1548,7 @@
     }
 
     // ================================================================
-    // MEDIA COMPONENT
+    // CORE HANDLERS
     // ================================================================
     function setupMediaSession() {
       if('mediaSession' in navigator) {
@@ -1586,9 +1589,6 @@
       document.getElementById('readerBookmark').classList.toggle('active-bm', bookmarks.includes(STATE.currentPage));
     }
 
-    // ================================================================
-    // SYSTEM SUBSYSTEM CONTROLS
-    // ================================================================
     async function syncAllBooks() {
       showLoading("🔄 എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്യുന്നു...");
       await loadLibraryFromSupabase();
@@ -1666,8 +1666,33 @@
       renderBooks(filtered);
     }
 
+    function toggleReadingStyle() {
+      const isVertical = document.getElementById('optVerticalScroll').checked;
+      STATE.scrollStyle = isVertical ? 'vertical' : 'page';
+      renderAllPages();
+    }
+
+    function switchViewportTab(mode) {
+      STATE.mode = mode;
+      document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
+      document.getElementById('audioView').style.display = mode === 'audio' ? 'block' : 'none';
+      document.getElementById('visualView').style.display = mode === 'visual' ? 'block' : 'none';
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      let activeTab = document.getElementById('nav-' + mode); if(activeTab) activeTab.classList.add('active');
+      
+      if (mode === 'visual') {
+        document.getElementById('visualMode').classList.add('show');
+        updateVisualChunk(); applyVisualBg();
+      } else {
+        document.getElementById('visualMode').classList.remove('show');
+        document.getElementById('visualVideo').pause();
+        renderAllPages();
+      }
+      resumeAudioContext();
+    }
+
     // ================================================================
-    // INITIALIZATION RUNTIME
+    // INITIALIZATION
     // ================================================================
     document.addEventListener('DOMContentLoaded', () => {
       loadPreferences();
@@ -1681,12 +1706,8 @@
       window.addEventListener("resize", adjustVideoScale);
       setupMediaSession();
       
-      // Vercel deployment എൺവയോൺമെന്റ് അലൈൻമെന്റ് ഉൾപ്പെടുത്തി കോൺഫിഗറേഷൻ റൺ ചെയ്യുന്നു
+      // ഡാറ്റാബേസ് സുരക്ഷിതമായി ലൗഡ് ചെയ്യുന്നു
       loadSupabaseConfig();
-      
-      if (navigator.userAgent.indexOf('Edg') !== -1) {
-        console.log('🟦 Microsoft Edge detected - Natural voices available');
-      }
     });
   </script>
 </body>
