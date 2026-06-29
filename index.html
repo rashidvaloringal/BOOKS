@@ -152,12 +152,12 @@
     /* ================================================================
        BOOK GRID
        ================================================================ */
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; }
     
     details.group-details { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; grid-column: 1/-1; overflow: hidden; }
     details.group-details summary { padding: 15px; font-weight: bold; color: var(--primary-green); cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; background: var(--primary-light); }
     details.group-details summary::-webkit-details-marker { display: none; }
-    details.group-details .group-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 15px; border-top: 1px solid var(--border); background: var(--bg); }
+    details.group-details .group-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; padding: 15px; border-top: 1px solid var(--border); background: var(--bg); }
 
     .book-card {
       background: var(--card-bg); border-radius: var(--radius); overflow: hidden;
@@ -174,7 +174,7 @@
     .book-status-badge .downloading { color: #f59e0b; }
     .book-status-badge .paused { color: #f59e0b; }
     
-    .progress-bar-container { width: 100%; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-bar-container { width: 100%; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 4px; }
     .progress-bar { height: 100%; background: var(--primary-green); width: 0%; transition: width 0.3s; }
     
     .book-footer { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
@@ -187,7 +187,7 @@
     .pause-btn { color: #f59e0b; }
     .resume-btn { color: #27ae60; }
 
-    .book-meta { display: flex; justify-content: center; gap: 10px; font-size: 10px; color: var(--text-muted); margin-top: 4px; flex-wrap: wrap; }
+    .book-meta { display: flex; justify-content: center; gap: 8px; font-size: 10px; color: var(--text-muted); margin-top: 4px; flex-wrap: wrap; }
 
     /* ================================================================
        BOTTOM NAV
@@ -358,7 +358,7 @@
        RESPONSIVE
        ================================================================ */
     @media (max-width: 600px) {
-      .book-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+      .book-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
       .reader-page-card { padding: 20px 15px; }
       .ar-content { font-size: calc(var(--font-scale) + 2px); }
       .ml-content { font-size: var(--font-scale); }
@@ -623,7 +623,7 @@
 
   <script>
     // ================================================================
-    // SUPA BASE INTEGRATION
+    // SUPABASE INTEGRATION
     // ================================================================
     let supabaseClient = null;
     let SUPABASE_URL = '';
@@ -656,7 +656,6 @@
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       document.getElementById('connectionSetup').classList.remove('show');
       document.getElementById('loadStatus').textContent = '📚 പുസ്തകങ്ങൾ ലോഡ് ചെയ്യുന്നു...';
-      db.setSupabase(supabaseClient);
       initApp();
     }
 
@@ -681,63 +680,6 @@
     document.addEventListener('touchstart', resumeAudioContext);
 
     // ================================================================
-    // COMPRESSION MANAGER
-    // ================================================================
-    class CompressionManager {
-      constructor() {
-        this.supported = 'CompressionStream' in window;
-        console.log('Compression supported:', this.supported);
-      }
-
-      async compress(text) {
-        if (!text) return new Uint8Array(0);
-        if (!this.supported) return new TextEncoder().encode(text);
-        try {
-          const stream = new CompressionStream('gzip');
-          const writer = stream.writable.getWriter();
-          const reader = stream.readable.getReader();
-          const data = new TextEncoder().encode(text);
-          writer.write(data);
-          writer.close();
-          const chunks = [];
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            chunks.push(value);
-          }
-          const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-          const result = new Uint8Array(totalLength);
-          let offset = 0;
-          for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.length; }
-          return result;
-        } catch(e) { return new TextEncoder().encode(text); }
-      }
-
-      async decompress(compressed) {
-        if (!compressed || compressed.length === 0) return '';
-        if (!this.supported) return new TextDecoder().decode(compressed);
-        try {
-          const stream = new DecompressionStream('gzip');
-          const writer = stream.writable.getWriter();
-          const reader = stream.readable.getReader();
-          writer.write(compressed);
-          writer.close();
-          const chunks = [];
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            chunks.push(value);
-          }
-          const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-          const result = new Uint8Array(totalLength);
-          let offset = 0;
-          for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.length; }
-          return new TextDecoder().decode(result);
-        } catch(e) { return new TextDecoder().decode(compressed); }
-      }
-    }
-
-    // ================================================================
     // DATABASE SERVICE
     // ================================================================
     const DB_NAME = 'AdventureLibraryDB';
@@ -746,15 +688,9 @@
     class DatabaseService {
       constructor() {
         this.db = null;
-        this.supabase = null;
-        this.compressor = new CompressionManager();
         this.pageCache = new Map();
         this.cacheSize = 3;
         this.initialized = false;
-      }
-
-      setSupabase(client) {
-        this.supabase = client;
       }
 
       async initDB() {
@@ -769,7 +705,6 @@
             if (!db.objectStoreNames.contains('book_chunks')) {
               const store = db.createObjectStore('book_chunks', { keyPath: 'uid' });
               store.createIndex('book_id', 'book_id', { unique: false });
-              store.createIndex('book_sequence', ['book_id', 'sequence'], { unique: false });
             }
             if (!db.objectStoreNames.contains('bookmarks')) {
               const bm = db.createObjectStore('bookmarks', { keyPath: 'id', autoIncrement: true });
@@ -853,7 +788,7 @@
       }
 
       // ================================================================
-      // BOOK CHUNKS - Sequence based
+      // BOOK CHUNKS
       // ================================================================
       async saveChunks(bookId, chunks) {
         if (!chunks || chunks.length === 0) return;
@@ -864,18 +799,22 @@
         for (const chunk of chunks) {
           seq++;
           const uid = `${bookId}_${seq}`;
-          const arCompressed = await this.compressor.compress(chunk.ar || '');
-          const mlCompressed = await this.compressor.compress(chunk.ml || '');
-          const enCompressed = await this.compressor.compress(chunk.en || '');
           store.put({
-            uid, book_id: bookId, sequence: seq,
-            part: parseInt(chunk.part) || 1, page: parseInt(chunk.page) || seq,
-            ar_compressed: arCompressed, ml_compressed: mlCompressed, en_compressed: enCompressed,
-            ar_pure: chunk.arPure || chunk.ar || '',
-            ml_pure: chunk.mlPure || chunk.ml || '',
-            en_pure: chunk.enPure || chunk.en || '',
-            isHead: chunk.isHead || false, headingAr: chunk.headingAr || '',
-            hTagLevel: chunk.hTagLevel || '', updated_at: new Date().toISOString()
+            uid: uid,
+            book_id: bookId,
+            sequence: seq,
+            part: parseInt(chunk.part) || 1,
+            page: parseInt(chunk.page) || seq,
+            ar: chunk.ar || '',
+            ml: chunk.ml || '',
+            en: chunk.en || '',
+            arPure: chunk.arPure || chunk.ar || '',
+            mlPure: chunk.mlPure || chunk.ml || '',
+            enPure: chunk.enPure || chunk.en || '',
+            isHead: chunk.isHead || false,
+            headingAr: chunk.headingAr || '',
+            hTagLevel: chunk.hTagLevel || '',
+            updated_at: new Date().toISOString()
           });
         }
         return new Promise((resolve, reject) => {
@@ -901,18 +840,12 @@
         if (this.pageCache.has(uid)) return this.pageCache.get(uid);
         const result = await this.get('book_chunks', uid);
         if (result) {
-          const page = {
-            ...result,
-            ar: await this.compressor.decompress(result.ar_compressed),
-            ml: await this.compressor.decompress(result.ml_compressed),
-            en: await this.compressor.decompress(result.en_compressed)
-          };
           if (this.pageCache.size >= this.cacheSize) {
             const firstKey = this.pageCache.keys().next().value;
             this.pageCache.delete(firstKey);
           }
-          this.pageCache.set(uid, page);
-          return page;
+          this.pageCache.set(uid, result);
+          return result;
         }
         return null;
       }
@@ -921,9 +854,9 @@
         const chunks = await this.getChunks(bookId);
         let size = 0;
         for (const c of chunks) {
-          if (c.ar_compressed) size += c.ar_compressed.length;
-          if (c.ml_compressed) size += c.ml_compressed.length;
-          if (c.en_compressed) size += c.en_compressed.length;
+          if (c.ar) size += c.ar.length;
+          if (c.ml) size += c.ml.length;
+          if (c.en) size += c.en.length;
         }
         return size;
       }
@@ -988,7 +921,7 @@
       async deleteBookmark(id) { await this.delete('bookmarks', id); }
 
       // ================================================================
-      // SEARCH - Direct from book_chunks
+      // SEARCH
       // ================================================================
       async search(bookId, query) {
         if (!query || query.length < 2) return [];
@@ -996,15 +929,17 @@
         const chunks = await this.getChunks(bookId);
         const results = [];
         for (const c of chunks) {
-          const ar = (c.ar_pure || '').toLowerCase();
-          const ml = (c.ml_pure || '').toLowerCase();
-          const en = (c.en_pure || '').toLowerCase();
+          const ar = (c.arPure || '').toLowerCase();
+          const ml = (c.mlPure || '').toLowerCase();
+          const en = (c.enPure || '').toLowerCase();
           if (ar.includes(queryLower) || ml.includes(queryLower) || en.includes(queryLower)) {
             results.push({
-              sequence: c.sequence, part: c.part, page: c.page,
-              ar: (c.ar_pure || '').substring(0, 100) + '...',
-              ml: (c.ml_pure || '').substring(0, 100) + '...',
-              en: (c.en_pure || '').substring(0, 100) + '...'
+              sequence: c.sequence,
+              part: c.part,
+              page: c.page,
+              ar: (c.arPure || '').substring(0, 100) + '...',
+              ml: (c.mlPure || '').substring(0, 100) + '...',
+              en: (c.enPure || '').substring(0, 100) + '...'
             });
             if (results.length >= 50) break;
           }
@@ -1033,10 +968,23 @@
 
       async syncBooks() {
         if (!supabaseClient) throw new Error('Supabase not connected');
-        const { data, error } = await supabaseClient.from('books').select('*');
+        const { data, error } = await supabaseClient.from('master_catalog').select('*');
         if (error) throw error;
-        await this.db.saveBooks(data);
-        return data;
+        
+        const books = data.map(b => ({
+          id: b.id,
+          title: b.title_ar || b.title_ml,
+          titleMl: b.title_ml,
+          author: b.author || 'Unknown',
+          cover: b.cover_url || '📖',
+          description: b.description || '',
+          parts: b.parts || 1,
+          version: b.version || 1,
+          updated_at: b.created_at || new Date().toISOString()
+        }));
+        
+        await this.db.saveBooks(books);
+        return books;
       }
 
       async downloadBook(bookId, progressCallback = null) {
@@ -1050,34 +998,57 @@
           const book = await this.db.getBook(bookId);
           if (!book) throw new Error('Book not found');
 
+          const tableName = `${bookId}_contents`;
+          
+          const { count, error: countError } = await supabaseClient
+            .from(tableName)
+            .select('*', { count: 'exact', head: true });
+          
+          if (countError) throw countError;
+          const totalPages = count || 0;
+
+          await this.db.updateBookStatus(bookId, { 
+            status: 'downloading', 
+            downloaded: false, 
+            total_pages: totalPages 
+          });
+
           let lastId = book.last_downloaded_id || 0;
           let totalDownloaded = 0;
           const BATCH_SIZE = 500;
 
-          // Get total count
-          const { count, error: countError } = await supabaseClient
-            .from('book_parts')
-            .select('*', { count: 'exact', head: true })
-            .eq('book_id', bookId);
-          if (countError) throw countError;
-          const totalPages = count || 0;
-
-          await this.db.updateBookStatus(bookId, { status: 'downloading', downloaded: false, total_pages: totalPages });
-
           while (!this.shouldStop) {
             let query = supabaseClient
-              .from('book_parts')
+              .from(tableName)
               .select('*')
-              .eq('book_id', bookId)
               .order('id', { ascending: true })
               .limit(BATCH_SIZE);
-            if (lastId > 0) query = query.gt('id', lastId);
+            
+            if (lastId > 0) {
+              query = query.gt('id', lastId);
+            }
 
             const { data, error } = await query;
             if (error) throw error;
             if (!data || data.length === 0) break;
 
-            await this.db.saveChunks(bookId, data);
+            const chunks = data.map(item => ({
+              id: item.id,
+              part: item['Part Number'] || 1,
+              page: item['Page Number'] || 1,
+              ar: item['Arabic Text'] || '',
+              ml: item['Malayalam Text'] || '',
+              en: item['English Text'] || '',
+              status: item['Status'] || '',
+              arPure: (item['Arabic Text'] || '').replace(/<[^>]+>/g, '').trim(),
+              mlPure: (item['Malayalam Text'] || '').replace(/<[^>]+>/g, '').trim(),
+              enPure: (item['English Text'] || '').replace(/<[^>]+>/g, '').trim(),
+              isHead: /<h[1-6]/i.test(item['Arabic Text'] || ''),
+              headingAr: (item['Arabic Text'] || '').replace(/<[^>]+>/g, '').trim(),
+              hTagLevel: (item['Arabic Text'] || '').match(/<h([1-6])/i)?.[1] || ''
+            }));
+
+            await this.db.saveChunks(bookId, chunks);
             totalDownloaded += data.length;
             lastId = data[data.length - 1].id;
 
@@ -1097,8 +1068,10 @@
           if (!this.shouldStop) {
             const size = await this.db.getStorageSize(bookId);
             await this.db.updateBookStatus(bookId, {
-              downloaded: true, status: 'downloaded',
-              storage_size: size, last_downloaded_id: null,
+              downloaded: true,
+              status: 'downloaded',
+              storage_size: size,
+              last_downloaded_id: null,
               last_sync: new Date().toISOString()
             });
             return { success: true, pages: totalDownloaded, size };
@@ -1282,7 +1255,6 @@
         initAudioContext();
         if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = setupVoices;
 
-        // Load books from IndexedDB
         let books = await db.getBooks();
         if (books && books.length > 0) {
           STATE.books = books;
@@ -1291,7 +1263,6 @@
           updateContinueReading();
           updateStorageInfo();
         } else {
-          // First time - sync from Supabase
           await manualSync();
         }
       } catch (e) {
@@ -1430,7 +1401,7 @@
       try {
         const book = await db.getBook(bookId);
         if (!book) return;
-        const { data, error } = await supabaseClient.from('books').select('version').eq('id', bookId).single();
+        const { data, error } = await supabaseClient.from('master_catalog').select('version').eq('id', bookId).single();
         if (error) throw error;
         if (data.version > (book.version || 0)) {
           if (confirm(`New version available (${data.version}). Download update?`)) {
@@ -1498,7 +1469,7 @@
       if (STATE.showEn) html += `<div class="en-content">${page.en || ''}</div>`;
       html += `</div>`;
       container.innerHTML = html;
-      document.getElementById('miniTitle').textContent = (page.ml_pure || '').substring(0, 40) + '...';
+      document.getElementById('miniTitle').textContent = (page.mlPure || '').substring(0, 40) + '...';
       document.getElementById('miniProgress').textContent = `Part ${page.part} - Page ${page.page}`;
     }
 
@@ -1722,7 +1693,7 @@
           <div class="toc-item ${seq === STATE.reader?.currentSequence ? 'current' : ''}" onclick="jumpToSequence(${seq})">
             <div class="toc-badge">📄 പേജ് ${page.page || seq}</div>
             <div class="toc-title-text">ഭാഗം ${page.part || '1'}</div>
-            <div class="toc-translations">${(page.ml_pure || '').substring(0, 30)}...</div>
+            <div class="toc-translations">${(page.mlPure || '').substring(0, 30)}...</div>
           </div>
         `;
       }
@@ -1910,11 +1881,8 @@
     // DOM READY
     // ================================================================
     document.addEventListener('DOMContentLoaded', () => {
-      // Load preferences first
       loadPreferences();
-
       // Supabase config is loaded via IIFE
-      // App initializes after Supabase connects
     });
   </script>
 </body>
