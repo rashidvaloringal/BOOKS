@@ -7,10 +7,6 @@
 .vercel
 .vercel_cache
 
-# Node
-node_modules/
-npm-debug.log*
-
 # System
 .DS_Store
 Thumbs.db
@@ -21,8 +17,3 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-
-# Build
-dist/
-build/
-*.min.js
